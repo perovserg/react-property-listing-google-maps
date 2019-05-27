@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Card = ({property, activeProperty, index}) => {
+const Card = ({property, activeProperty}) => {
 
-    const {price, address, city, picture, bedrooms, bathrooms, carSpaces} = property;
+    const {price, index, address, city, picture, bedrooms, bathrooms, carSpaces} = property;
     const isActive = activeProperty._id === property._id;
 
     return (
