@@ -7,7 +7,7 @@ const Card = ({property, activeProperty}) => {
     const isActive = activeProperty._id === property._id;
 
     return (
-        <div id="card-0" className={`card col-sm-12 col-md-6 col-lg-4 ${isActive ? 'is-active': ''}`}>
+        <div id={`card-${index}`} className={`card col-sm-12 col-md-6 col-lg-4 ${isActive ? 'is-active': ''}`}>
             <img src={picture} alt={city} />
             <p className="price">{price}</p>
             <div className="details">
