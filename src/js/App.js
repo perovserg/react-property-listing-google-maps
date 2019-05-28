@@ -8,6 +8,8 @@ import GoogleMap from './GoogleMap';
 import Header from './Header';
 import {easeInOutCubic} from './utils/Easing';
 
+import imageLocationMap from '../images/location-map.svg';
+
 class App extends React.Component {
 
   constructor(props){
@@ -25,6 +27,7 @@ class App extends React.Component {
             carSpaces: 'any',
             minPrice: 'any',
             maxPrice: 'any',
+            sort: 'any',
         },
     };
   }
@@ -63,6 +66,9 @@ class App extends React.Component {
           return true;
       });
 
+      if (filter.sort !== '0') filteredProperties.sort((a, b) => b.price - a.price);
+      if (filter.sort !== '1') filteredProperties.sort((a, b) => a.price - b.price);
+
       this.setState({
           filteredProperties,
           activeProperty: filteredProperties.length ? filteredProperties[0] : {},
@@ -80,6 +86,7 @@ class App extends React.Component {
             carSpaces: 'any',
             minPrice: 'any',
             maxPrice: 'any',
+            sort: 'any',
           },
           filteredProperties: [],
           isFiltering: false,
@@ -134,7 +141,7 @@ class App extends React.Component {
               clearFilters={this.clearFilters}
           />
           <div className="cards container">
-            <div className="cards-list row ">
+            <div className={`cards-list row ${cardsList.length === 0 ? 'is-empty' : ''}`}>
                 {
                     cardsList.map(property => {
                         return <Card
@@ -144,6 +151,14 @@ class App extends React.Component {
                             setActiveProperty={this.setActiveProperty}
                         />;
                     })
+                }
+                { (isFiltering && cardsList.length === 0)
+                    ?   <p className="warning">
+                            <img src={imageLocationMap} alt="Not found"/>
+                            <br/>
+                            No properties were found!
+                        </p>
+                    : ''
                 }
             </div>
           </div>

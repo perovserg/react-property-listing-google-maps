@@ -78,7 +78,7 @@ class Filter extends React.Component {
                     <label htmlFor="filterSort">Order by</label>
                     <select
                         id="filterSort"
-                        name="filterSort"
+                        name="sort"
                         onChange={event => handleFilterChange(event)}
                     >
                         <option value="any">Default</option>
