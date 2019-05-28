@@ -11,7 +11,6 @@ const Header = ({filterIsVisible, toggleFilter, handleFilterChange, clearFilters
                 toggleFilter={toggleFilter}
                 handleFilterChange={handleFilterChange}
                 clearFilters={clearFilters}
-                filter={filter}
             />
             <img src={image} alt={"Property Listings"} />
             <h1>Property Listings</h1>

@@ -108,7 +108,6 @@ Filter.propTypes = {
     toggleFilter: PropTypes.func.isRequired,
     handleFilterChange: PropTypes.func.isRequired,
     clearFilters: PropTypes.func.isRequired,
-    filter: PropTypes.object.isRequired,
 };
 
 export default Filter;
