@@ -11,6 +11,25 @@ class GoogleMap extends React.Component {
         }
     }
 
+    closeAllMarkers() {
+        const {markers} = this.state;
+        // hide all other info boxes on click
+        markers.forEach(marker => {
+            marker.iw.close();
+        });
+    }
+
+    showActivePropertyMarker(activeProperty) {
+        const {markers} = this.state;
+        // show active property info window
+        markers[activeProperty.index] && markers[activeProperty.index].iw.open(this.map, markers[activeProperty.index]);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {activeProperty} = nextProps;
+        this.closeAllMarkers();
+        this.showActivePropertyMarker(activeProperty);
+    }
 
     componentDidMount() {
 
@@ -57,10 +76,7 @@ class GoogleMap extends React.Component {
 
             this.marker.addListener('click', () => {
 
-                // hide all other info boxes on click
-                markers.forEach(marker => {
-                    marker.iw.close();
-                });
+                this.closeAllMarkers();
 
                 // set active property onto the state
                 setActiveProperty(property);
@@ -73,8 +89,8 @@ class GoogleMap extends React.Component {
 
         this.setState({ markers });
 
-        // show active property info window
-        markers[activeProperty.index] && markers[activeProperty.index].iw.open(this.map, markers[activeProperty.index]);
+        this.showActivePropertyMarker(activeProperty);
+
     }
 
     render(){
