@@ -7,7 +7,7 @@ class GoogleMap extends React.Component {
         super(props);
 
         this.state = {
-            markets: []
+            markers: []
         }
     }
 
@@ -31,9 +31,25 @@ class GoogleMap extends React.Component {
         this.showActivePropertyMarker(activeProperty);
     }
 
-    componentDidMount() {
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.properties === this.props.properties) return;
 
-        const {properties, activeProperty: {latitude, longitude}} = this.props;
+        const {filteredProperties, isFiltering} = this.props;
+        const {markers} = this.state;
+
+        markers.forEach(marker => {
+            // that is the associated property
+            const {property} = marker;
+
+            markers[property.index].setVisible(!isFiltering || filteredProperties.includes(property));
+        });
+    }
+
+    componentDidMount() {
+        const {
+            properties,
+            activeProperty: {latitude, longitude}
+        } = this.props;
 
         // noinspection JSUnresolvedVariable
         this.map = new google.maps.Map(this.refs.map, {
@@ -68,6 +84,8 @@ class GoogleMap extends React.Component {
                     anchor: new google.maps.Point(11, 52),
                 }
             });
+
+            this.marker.property = property;
 
             // create info window for each marker
             this.marker.iw = new google.maps.InfoWindow({
@@ -107,6 +125,8 @@ GoogleMap.propTypes = {
     properties: PropTypes.array.isRequired,
     activeProperty: PropTypes.object.isRequired,
     setActiveProperty: PropTypes.func.isRequired,
+    filteredProperties: PropTypes.array,
+    isFiltering: PropTypes.bool,
 };
 
 export default GoogleMap;

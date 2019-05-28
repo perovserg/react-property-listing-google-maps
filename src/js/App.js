@@ -17,8 +17,51 @@ class App extends React.Component {
         properties: data.properties,
         activeProperty: data.properties[0],
         filterIsVisible: false,
+        filteredProperties: [],
+        isFiltering: false,
+        filterBedrooms: 'any',
     };
   }
+
+  handleFilterChange = (event) => {
+      const {target: {value, name}} = event;
+      this.setState({
+          [name]: value
+      }, () => {
+          this.filterProperties();
+      });
+      // setState не всегда выполняется мгновенно
+      // поэтому если далее есть вычисления зависящие от state
+      // нужно использовать callback
+      // или lifecycle метод componentDidUpdate
+  };
+
+  filterProperties = () => {
+      const {properties, filterBedrooms} = this.state;
+      const isFiltering = filterBedrooms !== 'any';
+
+      const filter = {
+        bedrooms: filterBedrooms
+      };
+
+      const filteredProperties = properties.filter(property => {
+
+          if (filter.bedrooms !== 'any'
+              && property.bedrooms !== parseInt(filter.bedrooms)) {
+
+              return false;
+          }
+
+          return true;
+      });
+
+      this.setState({
+          filteredProperties,
+          activeProperty: filteredProperties.length && filteredProperties[0],
+          isFiltering
+      });
+
+  };
 
   toggleFilter = (event) => {
       event.preventDefault();
@@ -44,7 +87,15 @@ class App extends React.Component {
 
     render(){
 
-    const {properties, activeProperty, filterIsVisible} = this.state;
+    const {
+        properties,
+        activeProperty,
+        filterIsVisible,
+        filteredProperties,
+        isFiltering
+    } = this.state;
+
+    const cardsList = isFiltering ? filteredProperties : properties;
 
     return (
       <div>
@@ -53,12 +104,12 @@ class App extends React.Component {
           <Header
               filterIsVisible={filterIsVisible}
               toggleFilter={this.toggleFilter}
+              handleFilterChange={this.handleFilterChange}
           />
           <div className="cards container">
             <div className="cards-list row ">
-
                 {
-                    properties.map(property => {
+                    cardsList.map(property => {
                         return <Card
                             key={property._id}
                             property={property}
@@ -67,16 +118,17 @@ class App extends React.Component {
                         />;
                     })
                 }
-
             </div>
           </div>
         </div>
         {/* listings - End */}
 
         <GoogleMap
-            properties={properties}
+            properties={cardsList}
             activeProperty={activeProperty}
             setActiveProperty={this.setActiveProperty}
+            filteredProperties={filteredProperties}
+            isFiltering={isFiltering}
         />
       </div>
     )

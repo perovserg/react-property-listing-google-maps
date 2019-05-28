@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 
 class Filter extends React.Component {
     render() {
-        const {toggleFilter} = this.props;
+        const {toggleFilter, handleFilterChange} = this.props;
         return (
             <form className="filter">
                 <div className="filterBox">
                     <label htmlFor="filterBedrooms">Bedrooms</label>
-                    <select id="filterBedrooms" name="filterBedrooms">
+                    <select
+                        id="filterBedrooms"
+                        name="filterBedrooms"
+                        onChange={event => handleFilterChange(event)}
+                    >
                         <option value="any">Any</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -79,6 +83,7 @@ class Filter extends React.Component {
 
 Filter.propTypes = {
     toggleFilter: PropTypes.func.isRequired,
+    handleFilterChange: PropTypes.func.isRequired,
 };
 
 export default Filter;
