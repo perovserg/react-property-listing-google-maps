@@ -19,14 +19,21 @@ class App extends React.Component {
         filterIsVisible: false,
         filteredProperties: [],
         isFiltering: false,
-        filterBedrooms: 'any',
+        filter: {
+            bedrooms: 'any',
+            bathrooms: 'any',
+            carSpaces: 'any',
+            minPrice: 'any',
+            maxPrice: 'any',
+        },
     };
   }
 
   handleFilterChange = (event) => {
       const {target: {value, name}} = event;
+
       this.setState({
-          [name]: value
+          filter: {...this.state.filter, [name]: value}
       }, () => {
           this.filterProperties();
       });
@@ -37,30 +44,49 @@ class App extends React.Component {
   };
 
   filterProperties = () => {
-      const {properties, filterBedrooms} = this.state;
-      const isFiltering = filterBedrooms !== 'any';
+      const {properties, filter} = this.state;
 
-      const filter = {
-        bedrooms: filterBedrooms
-      };
+      const isFiltering = Object.values(filter).filter(val => val !== 'any').length > 0;
 
       const filteredProperties = properties.filter(property => {
 
-          if (filter.bedrooms !== 'any'
-              && property.bedrooms !== parseInt(filter.bedrooms)) {
+          if (filter.bedrooms !== 'any' && property.bedrooms !== parseInt(filter.bedrooms)) return false;
 
-              return false;
-          }
+          if (filter.bathrooms !== 'any' && property.bathrooms !== parseInt(filter.bathrooms)) return false;
+
+          if (filter.carSpaces !== 'any' && property.carSpaces !== parseInt(filter.carSpaces)) return false;
+
+          if (filter.minPrice !== 'any' && property.price < parseInt(filter.minPrice)) return false;
+
+          if (filter.maxPrice !== 'any' && property.price > parseInt(filter.maxPrice)) return false;
 
           return true;
       });
 
       this.setState({
           filteredProperties,
-          activeProperty: filteredProperties.length && filteredProperties[0],
+          activeProperty: filteredProperties.length ? filteredProperties[0] : {},
           isFiltering
       });
 
+  };
+
+  clearFilters = (event, form) => {
+      event.preventDefault();
+      this.setState({
+          filter: {
+            bedrooms: 'any',
+            bathrooms: 'any',
+            carSpaces: 'any',
+            minPrice: 'any',
+            maxPrice: 'any',
+          },
+          filteredProperties: [],
+          isFiltering: false,
+          activeProperty: this.state.properties[0],
+
+      });
+      form.reset();
   };
 
   toggleFilter = (event) => {
@@ -92,7 +118,7 @@ class App extends React.Component {
         activeProperty,
         filterIsVisible,
         filteredProperties,
-        isFiltering
+        isFiltering,
     } = this.state;
 
     const cardsList = isFiltering ? filteredProperties : properties;
@@ -105,6 +131,7 @@ class App extends React.Component {
               filterIsVisible={filterIsVisible}
               toggleFilter={this.toggleFilter}
               handleFilterChange={this.handleFilterChange}
+              clearFilters={this.clearFilters}
           />
           <div className="cards container">
             <div className="cards-list row ">
