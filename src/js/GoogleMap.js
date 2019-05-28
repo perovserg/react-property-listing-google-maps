@@ -22,7 +22,7 @@ class GoogleMap extends React.Component {
     showActivePropertyMarker(activeProperty) {
         const {markers} = this.state;
         // show active property info window
-        markers[activeProperty.index] && markers[activeProperty.index].iw.open(this.map, markers[activeProperty.index]);
+        markers && markers[activeProperty.index] && markers[activeProperty.index].iw.open(this.map, markers[activeProperty.index]);
     }
 
     componentWillReceiveProps(nextProps) {
